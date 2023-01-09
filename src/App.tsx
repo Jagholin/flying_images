@@ -1,6 +1,3 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
 import TestBox from "./components/TestBox";
 import { CssBaseline, Stack } from "@mui/material";
@@ -11,8 +8,6 @@ import Workspace from "./components/mainViews/Workspace";
 import WorkspaceCreate from "./components/mainViews/WorkspaceCreate";
 import { StateContext } from "./state/context";
 import State from "./state/state";
-import { observer } from "mobx-react-lite";
-import { Observer } from "mobx-react-lite/dist/ObserverComponent";
 
 const programState = new State();
 

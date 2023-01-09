@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
 import { StateContext } from '../../state/context'
 
@@ -10,9 +10,10 @@ function Workspace() {
 
   return (
     <>
-      <p>Workspace</p>
       {!!context.currentWorkspace || <Navigate to="create" replace={true} />}
-      <Outlet />
+      <p>Workspace</p>
+      <p>Location: {context.currentWorkspace?.location}</p>
+      <p>Name: {context.currentWorkspace?.name}</p>
     </>
   )
 }
