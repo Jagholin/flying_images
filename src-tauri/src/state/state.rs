@@ -1,5 +1,7 @@
 use reqwest::Client;
 
+use crate::request::{da_api::DeviantArtAuth, artstation_api::ArtstationCsrf};
+
 use super::workspace::Workspace;
 use std::sync::Mutex;
 
@@ -15,16 +17,20 @@ impl State {
 }
 
 #[derive(Debug)]
-pub struct ManagedState {
+pub struct TauriState {
     pub state: Mutex<State>,
     pub reqwest_client: Client,
+    pub artstation_tokens: Mutex<Option<ArtstationCsrf>>,
+    pub da_auth: Mutex<Option<DeviantArtAuth>>,
 }
 
-impl ManagedState {
+impl TauriState {
     pub fn new() -> Self {
         Self {
             state: Mutex::new(State::default()),
-            reqwest_client: Client::new()
+            reqwest_client: Client::new(),
+            artstation_tokens: Mutex::new(None),
+            da_auth: Mutex::new(None),
         }
     }
 }

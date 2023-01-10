@@ -8,3 +8,7 @@ export async function search_web_images(query: string, ctx: State): Promise<void
 export async function get_csrf_token(): Promise<void> {
     const result = await invoke("get_csrf_token", {});
 }
+
+export async function test_da_request(): Promise<void> {
+    await invoke("test_da_request", {});
+}

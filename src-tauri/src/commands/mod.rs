@@ -8,3 +8,4 @@ pub use create_workspace::create_workspace;
 pub use open_workspace::open_workspace;
 
 pub use search_web_images::get_csrf_token;
+pub use search_web_images::test_da_request;
