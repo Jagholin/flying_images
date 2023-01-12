@@ -8,6 +8,7 @@ mod request;
 mod state;
 
 use commands::*;
+use tauri::Manager;
 
 fn main() {
     tauri::Builder::default()
@@ -17,8 +18,13 @@ fn main() {
             open_workspace,
             get_csrf_token,
             test_da_request,
+            search_web_images,
         ])
-        .manage(state::state::TauriState::new())
+        .setup(|app| {
+            let wnd = app.get_window("main").unwrap();
+            app.manage(state::state::TauriState::new(wnd));
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

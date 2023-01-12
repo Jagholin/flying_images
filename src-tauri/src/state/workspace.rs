@@ -45,7 +45,10 @@ impl Workspace {
     }
 
     pub fn to_ui_data(&self) -> WorkspaceUI {
-        WorkspaceUI { name: self.name.clone(), path: self.path.to_str().unwrap().to_string() }
+        WorkspaceUI {
+            name: self.name.clone(),
+            path: self.path.to_str().unwrap().to_string(),
+        }
     }
 
     pub fn create_workspace(name: impl ToString, path: impl ToString) -> Result<Self, String> {
@@ -53,7 +56,7 @@ impl Workspace {
 
         // let's try to create a new directory in `path` with name `name`
         work_path.push(name.to_string());
-        
+
         let result = Workspace {
             name: name.to_string(),
             path: work_path.clone(),

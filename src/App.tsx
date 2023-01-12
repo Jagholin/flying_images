@@ -8,11 +8,16 @@ import Workspace from "./components/mainViews/Workspace";
 import WorkspaceCreate from "./components/mainViews/WorkspaceCreate";
 import { StateContext } from "./state/context";
 import State from "./state/state";
+import { appWindow } from "@tauri-apps/api/window";
+import { useEffect } from "react";
 
 const programState = new State();
+appWindow.listen("task_finished", (event) => {
+  console.log("event task_finished caught, payload ", event.payload);
+});
 
 function App() {
-  /* async function greet() {
+  /* async function greet() {s
     // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
     setGreetMsg(await invoke("greet", { name }));
   } */
