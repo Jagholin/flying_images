@@ -23,6 +23,9 @@ pub struct ImageSearchResult {
     title: String,
     author_id: String,
     author_name: String,
+    preview_url: String,
+    id: String,
+    mature_content: bool,
 
     api_data: ImageSearchAPIData,
 }
@@ -109,20 +112,32 @@ pub async fn search_web_images(
 
     let mut result = vec![];
     for dresp in res_da.results {
-        let (Some(content), Some(title), Some(author)) = (&dresp.content, &dresp.title, &dresp.author) else {
-            println!("content, title or author missing in {:?}", dresp);
+        let (Some(content), Some(title), Some(author), Some(preview)) = (&dresp.content, &dresp.title, &dresp.author, &dresp.preview) else {
+            println!("content, title, preview or author missing in {:?}", dresp);
             continue;
         };
         result.push(ImageSearchResult {
+            id: dresp.deviationid.clone(),
+            mature_content: dresp.is_mature.unwrap_or(false),
             img_url: content.src.clone(),
             title: title.clone(),
             author_id: author.userid.clone(),
             author_name: author.username.clone(),
+            preview_url: preview.src.clone(),
             api_data: ImageSearchAPIData::DeviantArt(dresp),
         });
     }
     for aresp in res_as.data {
-        result.push(ImageSearchResult { img_url: aresp.url.clone(), title: aresp.title.clone(), author_id: aresp.user.id.to_string(), author_name: aresp.user.full_name.clone(), api_data: ImageSearchAPIData::ArtStation(aresp) })
+        result.push(ImageSearchResult {
+            id: aresp.hash_id.clone(),
+            mature_content: aresp.hide_as_adult,
+            img_url: aresp.url.clone(),
+            title: aresp.title.clone(),
+            author_id: aresp.user.id.to_string(),
+            author_name: aresp.user.full_name.clone(),
+            preview_url: aresp.smaller_square_cover_url.clone(),
+            api_data: ImageSearchAPIData::ArtStation(aresp),
+        })
     }
     Ok(result)
 }

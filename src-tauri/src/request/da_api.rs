@@ -28,16 +28,16 @@ pub struct DeviantArtFileDescriptor {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct DeviantArtSearchResponseItem {
-    deviationid: String,
+    pub deviationid: String,
     pub url: Option<String>,
     pub title: Option<String>,
-    is_mature: Option<bool>,
+    pub is_mature: Option<bool>,
     is_downloadable: Option<bool>,
     download_filesize: Option<u32>,
     category: Option<String>,
     pub author: Option<DeviantArtUser>,
     published_time: Option<String>,
-    preview: Option<DeviantArtFileDescriptor>,
+    pub preview: Option<DeviantArtFileDescriptor>,
     pub content: Option<DeviantArtFileDescriptor>,
     thumbs: Option<Vec<DeviantArtFileDescriptor>>,
 }

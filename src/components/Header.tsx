@@ -10,7 +10,7 @@ export default function Header() {
   }, []);
 
   return (
-    <AppBar position='relative'>
+    <AppBar>
       <Toolbar>
         <div style={{flexGrow: 1}} />
         <Typography variant='subtitle1'>

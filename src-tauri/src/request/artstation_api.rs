@@ -37,9 +37,10 @@ pub struct ArtStationSearchResponseUser {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ArtStationSearchResponseItem {
-    id: u32,
+    pub id: u32,
     pub hash_id: String,
     pub url: String,
+    pub smaller_square_cover_url: String,
     pub hide_as_adult: bool,
     pub title: String,
     icons: ArtStationSearchResponseIcons,
@@ -65,7 +66,7 @@ struct ArtStationSearchRequest {
 
 pub async fn request_csrf_token(cl: &Client) -> Result<ArtStationCsrf, String> {
     let res = cl
-        .post("https:///www.artstation.com/api/v2/csrf_protection/token.json")
+        .post("https://www.artstation.com/api/v2/csrf_protection/token.json")
         .send()
         .await
         .map_err(|e| e.to_string())?;
@@ -77,8 +78,8 @@ pub async fn request_csrf_token(cl: &Client) -> Result<ArtStationCsrf, String> {
     );
 
     let header_cookie = headers.get("set-cookie").unwrap().to_str().unwrap();
-    let (header_cookie, _) = header_cookie.split_once(";").unwrap();
-    let (_, header_cookie) = header_cookie.split_once("=").unwrap();
+    let (header_cookie, _) = header_cookie.split_once(';').unwrap();
+    let (_, header_cookie) = header_cookie.split_once('=').unwrap();
     let header_cookie = header_cookie.to_string();
 
     let res = res

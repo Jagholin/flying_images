@@ -1,6 +1,6 @@
 import "./App.css";
 import TestBox from "./components/TestBox";
-import { CssBaseline, Stack } from "@mui/material";
+import { AppBar, CssBaseline, Stack, Toolbar } from "@mui/material";
 import Header from "./components/Header";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import Origin from "./components/mainViews/Origin";
@@ -10,6 +10,7 @@ import { StateContext } from "./state/context";
 import State from "./state/state";
 import { appWindow } from "@tauri-apps/api/window";
 import { useEffect } from "react";
+import SearchResults from "./components/mainViews/SearchResults";
 
 const programState = new State();
 appWindow.listen("task_finished", (event) => {
@@ -75,6 +76,9 @@ function App() {
       }, {
         path: "create",
         element: <WorkspaceCreate />
+      }, {
+        path: "search",
+        element: <SearchResults />
       }]
     }
   ]);
@@ -84,7 +88,7 @@ function App() {
       <CssBaseline />
       <Stack height="100vh">
         <Header />
-        <Stack direction="row" flexGrow={1}>
+        <Stack direction="row" flexGrow={1} marginTop='64px'>
           <TestBox />
           <TestBox grow>
             <StateContext.Provider value={programState}>
@@ -92,7 +96,9 @@ function App() {
             </StateContext.Provider>
           </TestBox>
         </Stack>
-        <TestBox />
+        <AppBar position="sticky">
+          Hello
+        </AppBar>
       </Stack>
     </>
   );

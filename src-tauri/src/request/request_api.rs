@@ -1,4 +1,5 @@
 use crossbeam::channel::Sender;
+use crossbeam::atomic::AtomicCell;
 use serde::Serialize;
 use std::{
     future::Future,
@@ -32,7 +33,8 @@ type RequestRunner = Box<
 /// Cancelled requests will be removed from the queue, and already running requests will
 /// be run to completion.
 pub struct RequestAPI {
-    last_request_at: Mutex<Option<std::time::Instant>>,
+    // last_request_at: Mutex<Option<std::time::Instant>>,
+    last_request_at: AtomicCell<Option<std::time::Instant>>,
     requests_made: u32,
     request_queue: Sender<(RequestRunner, u32)>,
     last_task_id: u32,
@@ -54,8 +56,9 @@ impl RequestAPI {
     ) -> Arc<Self> {
         let (send, recv) =
             crossbeam::channel::bounded::<(RequestRunner, u32)>(16 * parallel_threads);
+        println!("atomic cell operations are lock free: {}", AtomicCell::<std::time::Instant>::is_lock_free());
         let res = Arc::new(Self {
-            last_request_at: Mutex::new(None),
+            last_request_at: AtomicCell::new(None),
             requests_made: 0,
             request_queue: send,
             last_task_id: 0,
@@ -65,7 +68,7 @@ impl RequestAPI {
             let local_state = state.clone();
             let local_wnd = window.clone();
             let local_self = res.clone();
-            tauri::async_runtime::spawn(async move {
+            tauri::async_runtime::spawn_blocking( move || {
                 loop {
                     let loop_wnd = local_wnd.clone();
                     let loop_state = local_state.clone();
@@ -73,13 +76,14 @@ impl RequestAPI {
                         Some(x) => x,
                         None => break,
                     };
+                    println!("start listening to tasks...");
                     let func = local_recv.recv();
                     match func {
                         Ok(f) => {
-                            let mut l = local_self.last_request_at.lock().await;
-                            *l = Some(std::time::Instant::now());
-                            drop(l);
-                            let result = f.0(loop_state, loop_wnd.clone()).await;
+                            local_self.last_request_at.store(Some(std::time::Instant::now()));
+                            let result = tauri::async_runtime::block_on(f.0(loop_state, loop_wnd.clone()));
+                            // let result = .await;
+                            
                             if loop_wnd
                                 .emit(
                                     "task_finished",

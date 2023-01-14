@@ -1,10 +1,22 @@
 import { invoke } from "@tauri-apps/api";
 import State from "../state/state";
 
-export async function search_web_images(query: string, ctx: State): Promise<void> {
+export interface ImageSearchResult {
+    id: string,
+    img_url: string,
+    title: string,
+    author_id: string,
+    author_name: string,
+    preview_url: string,
+    mature_content: boolean,
+}
+
+export async function search_web_images(query: string, ctx: State): Promise<ImageSearchResult[]> {
     console.log("execute image search, query is ", query)
-    const imgs = await invoke("search_web_images", { query });
+    const imgs = await invoke("search_web_images", { query }) as ImageSearchResult[];
     console.log("search web images finished, result is ", imgs);
+    ctx.setSearchResults(imgs);
+    return imgs;
 }
 
 export async function get_csrf_token(): Promise<void> {

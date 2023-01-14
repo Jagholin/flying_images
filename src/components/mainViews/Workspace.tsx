@@ -3,18 +3,20 @@ import TextField from '@mui/material/TextField';
 import { Box } from '@mui/system';
 import { observer } from 'mobx-react-lite'
 import { useContext, useCallback, useState, FormEvent } from 'react'
-import { Navigate, Outlet } from 'react-router-dom'
+import { Navigate, Outlet, useNavigate } from 'react-router-dom'
 import { get_csrf_token, search_web_images, test_da_request } from '../../commands/imageSearchCommands';
 import { StateContext } from '../../state/context'
 
 function Workspace() {
   const context = useContext(StateContext);
   const [searchField, setSearchField] = useState("");
+  const navigate = useNavigate();
 
   const handleSearchSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     search_web_images(searchField, context).then(() => {
       console.log("command finished");
+      navigate("/workspace/search");
     });
   }, [searchField, context]);
 

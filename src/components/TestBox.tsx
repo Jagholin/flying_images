@@ -20,7 +20,7 @@ function TestBox({
         flexGrow: grow ? 1 : undefined,
       }}
     >
-      TestBox
+      Test
       {children}
     </div>
   );

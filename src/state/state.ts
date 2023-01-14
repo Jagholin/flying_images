@@ -1,3 +1,4 @@
+import { ImageSearchResult } from './../commands/imageSearchCommands';
 import { makeAutoObservable } from 'mobx';
 import Workspace from "./workspace";
 
@@ -9,6 +10,9 @@ export default class State {
     /** current workspace that the user has opened */
     currentWorkspace?: Workspace;
 
+    /** search results that are currently being shown in the UI */
+    searchResults?: ImageSearchResult[];
+
     constructor() {
         makeAutoObservable(this);
     }
@@ -19,5 +23,13 @@ export default class State {
      */
     setCurrentWorkspace(ws: Workspace) {
         this.currentWorkspace = ws;
+    }
+
+    /**
+     * sets the currently visible search results
+     * @param res search results that we received from the backend
+     */
+    setSearchResults(res: ImageSearchResult[]) {
+        this.searchResults = res;
     }
 }
