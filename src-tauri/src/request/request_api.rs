@@ -1,10 +1,11 @@
 use crossbeam::channel::Sender;
 use crossbeam::atomic::AtomicCell;
+use reqwest::Url;
 use serde::Serialize;
 use std::{
     future::Future,
     pin::Pin,
-    sync::{Arc, Weak},
+    sync::{Arc, Weak}, path::PathBuf,
 };
 use tauri::async_runtime::Mutex;
 
@@ -18,6 +19,10 @@ type RequestRunner = Box<
         ) -> Pin<Box<dyn Future<Output = Result<String, String>> + Send>>
         + Send,
 >;
+
+pub enum AsyncRequest {
+    ImageDownload(Url, PathBuf),
+}
 
 /// Structure that saves statistics about image download/search
 /// requests to the given API and helps making the crawling proccess
@@ -53,16 +58,16 @@ impl RequestAPI {
         parallel_threads: usize,
         state: Weak<TauriState>,
         window: tauri::Window,
-    ) -> Arc<Self> {
+    ) -> Self {
         let (send, recv) =
             crossbeam::channel::bounded::<(RequestRunner, u32)>(16 * parallel_threads);
         println!("atomic cell operations are lock free: {}", AtomicCell::<std::time::Instant>::is_lock_free());
-        let res = Arc::new(Self {
+        let res = Self {
             last_request_at: AtomicCell::new(None),
             requests_made: 0,
             request_queue: send,
             last_task_id: 0,
-        });
+        };
         for _ in 0..parallel_threads {
             let local_recv = recv.clone();
             let local_state = state.clone();

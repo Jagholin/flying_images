@@ -29,45 +29,6 @@ function App() {
       element: <Origin />,
     },
     {
-      path: "/next-page",
-      element: <TestBox>
-          Next page
-        </TestBox>,
-      loader: async (args) => {
-        console.log("loader for next-page is called with arguments", args);
-        const prom = new Promise((resolve, reject) => {
-          setTimeout(() => {
-            console.log("loader for next-page is finished");
-            resolve(42)
-          }, 4000);
-        });
-        return prom;
-      }
-    },
-    {
-      path: "/unknown-page",
-      element: <TestBox />,
-      loader: (args) => {
-        console.log("loader for unknown page is called with args", args);
-        return null;
-      }
-    },
-    {
-      path: "/alt-page",
-      element: <TestBox>
-          Alternative page
-        </TestBox>,
-      loader: (args) => {
-        console.log("loader for alt-page is called with arguments, ", args);
-        return new Promise((resolve, reject) => {
-          setTimeout(() => {
-            console.log("loader for alt-page is finished");
-            resolve(46);
-          }, 2000);
-        })
-      }
-    },
-    {
       path: "/workspace",
       element: <Outlet />,
       children: [{

@@ -19,6 +19,11 @@ export async function search_web_images(query: string, ctx: State): Promise<Imag
     return imgs;
 }
 
+export async function get_search_page(pageNumber: number, ctx: State) {
+    console.log(`retrieving page ${pageNumber} from the last search...`);
+    const result = await invoke("get_search_page", { page_number: pageNumber });
+}
+
 export async function get_csrf_token(): Promise<void> {
     const result = await invoke("get_csrf_token", {});
 }
